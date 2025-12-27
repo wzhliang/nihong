@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎌 日本語単語練習</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 10px;
+        }
+
+        .level-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            flex-wrap: wrap;
+        }
+
+        .level-tab {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .level-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
+        }
+
+        .level-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .level-info {
+            text-align: center;
+            padding: 10px 20px;
+            background: #e3f2fd;
+            font-size: 14px;
+            color: #1976d2;
+        }
+
+        .quiz-container {
+            padding: 40px 20px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .start-btn, .retry-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+
+        .start-btn:hover, .retry-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .word-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .japanese-word {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .reading {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 36px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .choice-btn {
+            padding: 20px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .choice-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .choice-btn.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .choice-btn.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .progress {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .badges {
+            padding: 20px;
+            background: #fff9e6;
+            border-top: 2px solid #ffd54f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .badge-item {
+            font-size: 24px;
+            transition: transform 0.3s;
+        }
+
+        .badge-item:hover {
+            transform: scale(1.3);
+        }
+
+        .summary {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .summary h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .summary-stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-stat {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .new-badges {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .new-badges h3 {
+            color: #f9a825;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 72px;
+            z-index: 1000;
+            animation: fadeOut 1s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎌 日本語単語練習</h1>
+            <div class="stats">
+                <div class="stat-item">💰 <span id="totalPoints">0</span> pts</div>
+                <div class="stat-item">🔥 连胜: <span id="currentStreak">0</span></div>
+                <div class="stat-item">🏆 徽章: <span id="badgeCount">0</span></div>
+            </div>
+        </div>
+
+        <div class="level-tabs">
+            <button class="level-tab active" data-level="N5">N5</button>
+            <button class="level-tab" data-level="N4">N4</button>
+            <button class="level-tab" data-level="N3">N3</button>
+            <button class="level-tab" data-level="N2">N2</button>
+            <button class="level-tab" data-level="N1">N1</button>
+        </div>
+
+        <div class="level-info" id="levelInfo">
+            N5 进度: 0/50 正确 | 准确率: 0%
+        </div>
+
+        <div class="quiz-container" id="quizContainer">
+            <div class="start-screen" id="startScreen">
+                <h2>准备好学习 <span id="selectedLevel">N5</span> 词汇了吗？</h2>
+                <button class="start-btn" id="startBtn">开始练习 (20题)</button>
+            </div>
+
+            <div class="hidden" id="quizScreen">
+                <div class="word-display">
+                    <div class="japanese-word" id="japaneseWord">食べる</div>
+                    <div class="reading" id="reading">(たべる)</div>
+                    <div class="timer" id="timer"></div>
+                </div>
+                <div class="choices-grid hidden" id="choicesGrid">
+                    <button class="choice-btn" data-choice="0"></button>
+                    <button class="choice-btn" data-choice="1"></button>
+                    <button class="choice-btn" data-choice="2"></button>
+                    <button class="choice-btn" data-choice="3"></button>
+                </div>
+                <div class="progress" id="progress">题目 1 / 20</div>
+            </div>
+
+            <div class="hidden" id="summaryScreen">
+                <div class="summary">
+                    <h2>本轮结束！</h2>
+                    <div class="summary-stats">
+                        <div class="summary-stat">✅ 正确: <span id="correctCount">0</span></div>
+                        <div class="summary-stat">❌ 错误: <span id="wrongCount">0</span></div>
+                        <div class="summary-stat">📊 准确率: <span id="accuracy">0</span>%</div>
+                        <div class="summary-stat">💰 获得积分: <span id="earnedPoints">0</span></div>
+                    </div>
+                    <div class="new-badges hidden" id="newBadges">
+                        <h3>🎉 获得新徽章！</h3>
+                        <div id="newBadgesList"></div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="start-btn" id="continueBtn">继续练习</button>
+                        <button class="retry-btn hidden" id="retryBtn">重做错题 (<span id="mistakeCount">0</span>)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="badges" id="badgesContainer">
+            <span style="color: #999;">暂无徽章</span>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let vocabulary = {};
+        let gameState = {
+            currentLevel: 'N5',
+            currentSession: [],
+            currentIndex: 0,
+            mistakes: [],
+            isRetryMode: false,
+            sessionCorrect: 0,
+            sessionWrong: 0,
+            earnedPoints: 0,
+            countdown: 3,
+            timerInterval: null,
+            startTime: null
+        };
+
+        // User Data (persisted in localStorage)
+        let userData = {
+            totalPoints: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            badges: [],
+            levelStats: {
+                N5: { correct: 0, attempts: 0 },
+                N4: { correct: 0, attempts: 0 },
+                N3: { correct: 0, attempts: 0 },
+                N2: { correct: 0, attempts: 0 },
+                N1: { correct: 0, attempts: 0 }
+            }
+        };
+
+        // Badge Definitions
+        const BADGES = {
+            beginner: { icon: '🌱', name: '初心者', condition: 'Complete first session' },
+            streak5: { icon: '🔥', name: '连续5回', condition: '5 correct in a row' },
+            streak10: { icon: '⚡', name: '连续10回', condition: '10 correct in a row' },
+            perfect: { icon: '🎯', name: '完璧主義者', condition: '100% accuracy in session' },
+            n5master: { icon: '🥉', name: 'N5マスター', condition: '50 correct N5 answers' },
+            n4master: { icon: '🥉', name: 'N4マスター', condition: '50 correct N4 answers' },
+            n3master: { icon: '🥈', name: 'N3マスター', condition: '50 correct N3 answers' },
+            n2master: { icon: '🥈', name: 'N2マスター', condition: '50 correct N2 answers' },
+            n1master: { icon: '🥇', name: 'N1マスター', condition: '50 correct N1 answers' }
+        };
+
+        // Initialize
+        async function init() {
+            await loadVocabulary();
+            loadUserData();
+            updateUI();
+            setupEventListeners();
+        }
+
+        async function loadVocabulary() {
+            try {
+                const response = await fetch('vocabulary.json');
+                vocabulary = await response.json();
+            } catch (error) {
+                console.error('Failed to load vocabulary:', error);
+                alert('无法加载词汇数据，请确保 vocabulary.json 文件存在');
+            }
+        }
+
+        function loadUserData() {
+            const saved = localStorage.getItem('japaneseVocabApp');
+            if (saved) {
+                userData = { ...userData, ...JSON.parse(saved) };
+            }
+        }
+
+        function saveUserData() {
+            localStorage.setItem('japaneseVocabApp', JSON.stringify(userData));
+        }
+
+        function updateUI() {
+            document.getElementById('totalPoints').textContent = userData.totalPoints;
+            document.getElementById('currentStreak').textContent = userData.currentStreak;
+            document.getElementById('badgeCount').textContent = userData.badges.length;
+            updateLevelInfo();
+            updateBadgesDisplay();
+        }
+
+        function updateLevelInfo() {
+            const stats = userData.levelStats[gameState.currentLevel];
+            const accuracy = stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : 0;
+            document.getElementById('levelInfo').textContent = 
+                `${gameState.currentLevel} 进度: ${stats.correct}/50 正确 | 准确率: ${accuracy}%`;
+            document.getElementById('selectedLevel').textContent = gameState.currentLevel;
+        }
+
+        function updateBadgesDisplay() {
+            const container = document.getElementById('badgesContainer');
+            if (userData.badges.length === 0) {
+                container.innerHTML = '<span style="color: #999;">暂无徽章</span>';
+            } else {
+                container.innerHTML = userData.badges.map(badgeId => {
+                    const badge = BADGES[badgeId];
+                    return `<span class="badge-item" title="${badge.name}">${badge.icon}</span>`;
+                }).join('');
+            }
+        }
+
+        function setupEventListeners() {
+            // Level tabs
+            document.querySelectorAll('.level-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    gameState.currentLevel = tab.dataset.level;
+                    updateLevelInfo();
+                });
+            });
+
+            // Start button
+            document.getElementById('startBtn').addEventListener('click', startSession);
+            
+            // Continue button
+            document.getElementById('continueBtn').addEventListener('click', () => {
+                showScreen('start');
+            });
+
+            // Retry button
+            document.getElementById('retryBtn').addEventListener('click', startRetrySession);
+
+            // Choice buttons
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => handleAnswer(parseInt(e.target.dataset.choice)));
+            });
+        }
+
+        function startSession() {
+            const words = vocabulary[gameState.currentLevel];
+            if (!words || words.length === 0) {
+                alert('该级别暂无词汇');
+                return;
+            }
+
+            // Reset session state
+            gameState.currentSession = shuffleArray([...words]).slice(0, 20);
+            gameState.currentIndex = 0;
+            gameState.mistakes = [];
+            gameState.isRetryMode = false;
+            gameState.sessionCorrect = 0;
+            gameState.sessionWrong = 0;
+            gameState.earnedPoints = 0;
+
+            showScreen('quiz');
+            showNextWord();
+        }
+
+        function startRetrySession() {
+            gameState.currentSession = [...gameState.mistakes];
+            gameState.currentIndex = 0;
+            gameState.mistakes = [];
+            gameState.isRetryMode = true;
+
+            showScreen('quiz');
+            showNextWord();
+        }
+
+        function showNextWord() {
+            if (gameState.currentIndex >= gameState.currentSession.length) {
+                endSession();
+                return;
+            }
+
+            const word = gameState.currentSession[gameState.currentIndex];
+            
+            // Update word display
+            document.getElementById('japaneseWord').textContent = word.word;
+            document.getElementById('reading').textContent = `(${word.reading})`;
+            
+            // Update progress
+            const total = gameState.currentSession.length;
+            document.getElementById('progress').textContent = 
+                `题目 ${gameState.currentIndex + 1} / ${total}`;
+
+            // Hide choices and start countdown
+            document.getElementById('choicesGrid').classList.add('hidden');
+            gameState.countdown = 3;
+            gameState.startTime = Date.now();
+            updateTimer();
+            
+            gameState.timerInterval = setInterval(() => {
+                gameState.countdown--;
+                updateTimer();
+                
+                if (gameState.countdown <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    showChoices();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const timerEl = document.getElementById('timer');
+            if (gameState.countdown > 0) {
+                timerEl.textContent = `⏱️ ${gameState.countdown}`;
+            } else {
+                timerEl.textContent = '';
+            }
+        }
+
+        function showChoices() {
+            const word = gameState.currentSession[gameState.currentIndex];
+            const allWords = vocabulary[gameState.currentLevel];
+            
+            // Generate 3 wrong answers
+            const wrongAnswers = allWords
+                .filter(w => w.meaning !== word.meaning)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3)
+                .map(w => w.meaning);
+            
+            // Combine and shuffle
+            const choices = shuffleArray([word.meaning, ...wrongAnswers]);
+            
+            // Update buttons
+            const grid = document.getElementById('choicesGrid');
+            const buttons = grid.querySelectorAll('.choice-btn');
+            buttons.forEach((btn, index) => {
+                btn.textContent = choices[index];
+                btn.disabled = false;
+                btn.classList.remove('correct', 'wrong');
+                btn.dataset.correct = choices[index] === word.meaning;
+            });
+            
+            grid.classList.remove('hidden');
+        }
+
+        function handleAnswer(choiceIndex) {
+            const buttons = document.querySelectorAll('.choice-btn');
+            const clickedBtn = buttons[choiceIndex];
+            const isCorrect = clickedBtn.dataset.correct === 'true';
+            const word = gameState.currentSession[gameState.currentIndex];
+
+            // Disable all buttons
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Show feedback
+            if (isCorrect) {
+                clickedBtn.classList.add('correct');
+                showFeedback('✓');
+                
+                if (!gameState.isRetryMode) {
+                    // Calculate points
+                    let points = 10;
+                    const responseTime = Date.now() - gameState.startTime;
+                    if (responseTime < 4000) { // Within 1 second of choices appearing
+                        points += 5;
+                    }
+                    
+                    gameState.sessionCorrect++;
+                    gameState.earnedPoints += points;
+                    userData.totalPoints += points;
+                    userData.currentStreak++;
+                    
+                    // Streak bonus
+                    if (userData.currentStreak % 5 === 0) {
+                        userData.totalPoints += 20;
+                        gameState.earnedPoints += 20;
+                    }
+                    
+                    // Update stats
+                    userData.levelStats[gameState.currentLevel].correct++;
+                    userData.levelStats[gameState.currentLevel].attempts++;
+                    
+                    if (userData.currentStreak > userData.bestStreak) {
+                        userData.bestStreak = userData.currentStreak;
+                    }
+                }
+            } else {
+                clickedBtn.classList.add('wrong');
+                // Highlight correct answer
+                buttons.forEach(btn => {
+                    if (btn.dataset.correct === 'true') {
+                        btn.classList.add('correct');
+                    }
+                });
+                showFeedback('✗');
+                
+                if (!gameState.isRetryMode) {
+                    gameState.sessionWrong++;
+                    gameState.mistakes.push(word);
+                    userData.currentStreak = 0;
+                    userData.levelStats[gameState.currentLevel].attempts++;
+                } else {
+                    // In retry mode, add back to mistakes if wrong again
+                    gameState.mistakes.push(word);
+                }
+            }
+
+            saveUserData();
+            updateUI();
+
+            // Move to next word after delay
+            setTimeout(() => {
+                gameState.currentIndex++;
+                showNextWord();
+            }, 1500);
+        }
+
+        function showFeedback(symbol) {
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback';
+            feedback.textContent = symbol;
+            feedback.style.color = symbol === '✓' ? '#4caf50' : '#f44336';
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 1000);
+        }
+
+        function endSession() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+
+            // Check for new badges
+            const newBadges = checkBadges();
+            
+            // Update summary
+            document.getElementById('correctCount').textContent = gameState.sessionCorrect;
+            document.getElementById('wrongCount').textContent = gameState.sessionWrong;
+            const accuracy = gameState.sessionCorrect + gameState.sessionWrong > 0 
+                ? Math.round((gameState.sessionCorrect / (gameState.sessionCorrect + gameState.sessionWrong)) * 100)
+                : 0;
+            document.getElementById('accuracy').textContent = accuracy;
+            document.getElementById('earnedPoints').textContent = gameState.earnedPoints;
+            
+            // Show new badges
+            if (newBadges.length > 0) {
+                document.getElementById('newBadges').classList.remove('hidden');
+                document.getElementById('newBadgesList').innerHTML = newBadges.map(badgeId => {
+                    const badge = BADGES[badgeId];
+                    return `<span style="font-size: 36px;">${badge.icon}</span> <strong>${badge.name}</strong>`;
+                }).join('<br>');
+            } else {
+                document.getElementById('newBadges').classList.add('hidden');
+            }
+            
+            // Show/hide retry button
+            if (gameState.mistakes.length > 0 && !gameState.isRetryMode) {
+                document.getElementById('retryBtn').classList.remove('hidden');
+                document.getElementById('mistakeCount').textContent = gameState.mistakes.length;
+            } else {
+                document.getElementById('retryBtn').classList.add('hidden');
+            }
+            
+            showScreen('summary');
+        }
+
+        function checkBadges() {
+            const newBadges = [];
+            
+            // Beginner badge
+            if (!userData.badges.includes('beginner')) {
+                userData.badges.push('beginner');
+                newBadges.push('beginner');
+            }
+            
+            // Streak badges
+            if (userData.currentStreak >= 5 && !userData.badges.includes('streak5')) {
+                userData.badges.push('streak5');
+                newBadges.push('streak5');
+            }
+            if (userData.currentStreak >= 10 && !userData.badges.includes('streak10')) {
+                userData.badges.push('streak10');
+                newBadges.push('streak10');
+            }
+            
+            // Perfect badge
+            if (gameState.sessionCorrect === 20 && gameState.sessionWrong === 0 && !userData.badges.includes('perfect')) {
+                userData.badges.push('perfect');
+                newBadges.push('perfect');
+            }
+            
+            // Level master badges
+            const levelBadges = {
+                N5: 'n5master',
+                N4: 'n4master',
+                N3: 'n3master',
+                N2: 'n2master',
+                N1: 'n1master'
+            };
+            
+            Object.entries(levelBadges).forEach(([level, badgeId]) => {
+                if (userData.levelStats[level].correct >= 50 && !userData.badges.includes(badgeId)) {
+                    userData.badges.push(badgeId);
+                    newBadges.push(badgeId);
+                }
+            });
+            
+            if (newBadges.length > 0) {
+                saveUserData();
+                updateBadgesDisplay();
+            }
+            
+            return newBadges;
+        }
+
+        function showScreen(screen) {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('summaryScreen').classList.add('hidden');
+            
+            if (screen === 'start') {
+                document.getElementById('startScreen').classList.remove('hidden');
+            } else if (screen === 'quiz') {
+                document.getElementById('quizScreen').classList.remove('hidden');
+            } else if (screen === 'summary') {
+                document.getElementById('summaryScreen').classList.remove('hidden');
+            }
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
