@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎌 日本語単語練習</title>
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,254 +14,189 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            font-family: 'Press Start 2P', cursive;
+            background: #212529;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 100%;
-            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
             text-align: center;
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
 
         .stats {
             display: flex;
-            justify-content: space-around;
-            gap: 10px;
-            margin-top: 10px;
-            font-size: 14px;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .stat-item {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 15px;
-            border-radius: 10px;
+            font-size: 12px;
+            color: #fff;
         }
 
         .level-tabs {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            padding: 20px;
-            background: #f8f9fa;
+            gap: 15px;
+            padding: 20px 0;
             flex-wrap: wrap;
         }
 
         .level-tab {
-            padding: 10px 20px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .level-tab:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
-        }
-
-        .level-tab.active {
-            background: #667eea;
-            color: white;
+            min-width: 80px;
         }
 
         .level-info {
             text-align: center;
-            padding: 10px 20px;
-            background: #e3f2fd;
-            font-size: 14px;
-            color: #1976d2;
+            padding: 15px;
+            font-size: 10px;
+            color: #fff;
+            margin-bottom: 20px;
         }
 
         .quiz-container {
-            padding: 40px 20px;
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            min-height: 500px;
         }
 
-        .start-screen {
+        .start-screen,
+        .quiz-screen,
+        .summary {
             text-align: center;
         }
 
         .start-screen h2 {
-            font-size: 24px;
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-
-        .start-btn, .retry-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin: 10px;
-        }
-
-        .start-btn:hover, .retry-btn:hover {
-            transform: scale(1.05);
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
         }
 
         .word-display {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .japanese-word {
-            font-size: 48px;
+            font-size: 32px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
+            color: #fff;
+            margin-bottom: 15px;
+            font-family: sans-serif;
         }
 
         .reading {
-            font-size: 20px;
-            color: #666;
+            font-size: 16px;
+            color: #ccc;
             margin-bottom: 20px;
+            font-family: sans-serif;
         }
 
         .timer {
-            font-size: 36px;
-            color: #ff6b6b;
+            font-size: 24px;
+            color: #ff4141;
             font-weight: bold;
+            margin-top: 15px;
         }
 
         .choices-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 20px;
+            gap: 20px;
+            max-width: 500px;
+            margin: 0 auto 30px;
         }
 
         .choice-btn {
-            padding: 20px;
-            font-size: 18px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
+            min-height: 80px;
+            font-size: 16px;
+            font-family: sans-serif;
         }
 
-        .choice-btn:hover:not(:disabled) {
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .choice-btn.correct.is-success {
+            animation: bounce 0.5s;
         }
 
-        .choice-btn:disabled {
-            cursor: not-allowed;
+        .choice-btn.wrong.is-error {
+            animation: shake 0.5s;
         }
 
-        .choice-btn.correct {
-            background: #4caf50;
-            color: white;
-            border-color: #4caf50;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        .choice-btn.wrong {
-            background: #f44336;
-            color: white;
-            border-color: #f44336;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .progress {
             text-align: center;
-            color: #666;
-            font-size: 14px;
+            color: #fff;
+            font-size: 10px;
+            margin-top: 20px;
         }
 
-        .badges {
-            padding: 20px;
-            background: #fff9e6;
-            border-top: 2px solid #ffd54f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
+        .badges-section {
+            margin-top: 30px;
         }
 
         .badge-item {
-            font-size: 24px;
+            font-size: 32px;
+            display: inline-block;
+            margin: 10px;
             transition: transform 0.3s;
+            cursor: pointer;
         }
 
         .badge-item:hover {
             transform: scale(1.3);
         }
 
-        .summary {
-            text-align: center;
-            padding: 20px;
-        }
-
         .summary h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-
-        .summary-stats {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 30px;
         }
 
         .summary-stat {
-            font-size: 18px;
-            margin: 10px 0;
-            color: #333;
-        }
-
-        .new-badges {
-            background: #fff9e6;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            font-size: 12px;
+            margin: 15px 0;
+            color: #fff;
         }
 
         .new-badges h3 {
-            color: #f9a825;
-            margin-bottom: 10px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .new-badges {
+            margin: 20px 0;
         }
 
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .hidden {
@@ -274,11 +211,19 @@
             font-size: 72px;
             z-index: 1000;
             animation: fadeOut 1s forwards;
+            font-family: 'Press Start 2P', cursive;
         }
 
         @keyframes fadeOut {
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 14px; }
+            .japanese-word { font-size: 24px; }
+            .choice-btn { min-height: 60px; font-size: 14px; }
         }
     </style>
 </head>
@@ -288,17 +233,17 @@
             <h1>🎌 日本語単語練習</h1>
             <div class="stats">
                 <div class="stat-item">💰 <span id="totalPoints">0</span> pts</div>
-                <div class="stat-item">🔥 连胜: <span id="currentStreak">0</span></div>
-                <div class="stat-item">🏆 徽章: <span id="badgeCount">0</span></div>
+                <div class="stat-item">🔥 <span id="currentStreak">0</span></div>
+                <div class="stat-item">🏆 <span id="badgeCount">0</span></div>
             </div>
         </div>
 
         <div class="level-tabs">
-            <button class="level-tab active" data-level="N5">N5</button>
-            <button class="level-tab" data-level="N4">N4</button>
-            <button class="level-tab" data-level="N3">N3</button>
-            <button class="level-tab" data-level="N2">N2</button>
-            <button class="level-tab" data-level="N1">N1</button>
+            <button type="button" class="nes-btn is-primary level-tab active" data-level="N5">N5</button>
+            <button type="button" class="nes-btn level-tab" data-level="N4">N4</button>
+            <button type="button" class="nes-btn level-tab" data-level="N3">N3</button>
+            <button type="button" class="nes-btn level-tab" data-level="N2">N2</button>
+            <button type="button" class="nes-btn level-tab" data-level="N1">N1</button>
         </div>
 
         <div class="level-info" id="levelInfo">
@@ -307,48 +252,62 @@
 
         <div class="quiz-container" id="quizContainer">
             <div class="start-screen" id="startScreen">
-                <h2>准备好学习 <span id="selectedLevel">N5</span> 词汇了吗？</h2>
-                <button class="start-btn" id="startBtn">开始练习 (20题)</button>
+                <div class="nes-container is-dark with-title">
+                    <p class="title">准备开始</p>
+                    <h2>准备好学习 <span id="selectedLevel">N5</span> 词汇了吗？</h2>
+                    <button type="button" class="nes-btn is-primary" id="startBtn">开始练习 (20题)</button>
+                </div>
             </div>
 
             <div class="hidden" id="quizScreen">
-                <div class="word-display">
-                    <div class="japanese-word" id="japaneseWord">食べる</div>
-                    <div class="reading" id="reading">(たべる)</div>
-                    <div class="timer" id="timer"></div>
+                <div class="nes-container is-dark with-title">
+                    <p class="title">当前题目</p>
+                    <div class="word-display">
+                        <div class="japanese-word" id="japaneseWord">食べる</div>
+                        <div class="reading" id="reading">(たべる)</div>
+                        <div class="timer" id="timer"></div>
+                    </div>
+                    <div class="choices-grid hidden" id="choicesGrid">
+                        <button type="button" class="nes-btn choice-btn" data-choice="0"></button>
+                        <button type="button" class="nes-btn choice-btn" data-choice="1"></button>
+                        <button type="button" class="nes-btn choice-btn" data-choice="2"></button>
+                        <button type="button" class="nes-btn choice-btn" data-choice="3"></button>
+                    </div>
+                    <div class="progress" id="progress">题目 1 / 20</div>
                 </div>
-                <div class="choices-grid hidden" id="choicesGrid">
-                    <button class="choice-btn" data-choice="0"></button>
-                    <button class="choice-btn" data-choice="1"></button>
-                    <button class="choice-btn" data-choice="2"></button>
-                    <button class="choice-btn" data-choice="3"></button>
-                </div>
-                <div class="progress" id="progress">题目 1 / 20</div>
             </div>
 
             <div class="hidden" id="summaryScreen">
-                <div class="summary">
-                    <h2>本轮结束！</h2>
-                    <div class="summary-stats">
-                        <div class="summary-stat">✅ 正确: <span id="correctCount">0</span></div>
-                        <div class="summary-stat">❌ 错误: <span id="wrongCount">0</span></div>
-                        <div class="summary-stat">📊 准确率: <span id="accuracy">0</span>%</div>
-                        <div class="summary-stat">💰 获得积分: <span id="earnedPoints">0</span></div>
-                    </div>
-                    <div class="new-badges hidden" id="newBadges">
-                        <h3>🎉 获得新徽章！</h3>
-                        <div id="newBadgesList"></div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="start-btn" id="continueBtn">继续练习</button>
-                        <button class="retry-btn hidden" id="retryBtn">重做错题 (<span id="mistakeCount">0</span>)</button>
+                <div class="nes-container is-dark with-title">
+                    <p class="title">成绩单</p>
+                    <div class="summary">
+                        <h2>本轮结束！</h2>
+                        <div class="nes-container is-rounded">
+                            <div class="summary-stat">✅ 正确: <span id="correctCount">0</span></div>
+                            <div class="summary-stat">❌ 错误: <span id="wrongCount">0</span></div>
+                            <div class="summary-stat">📊 准确率: <span id="accuracy">0</span>%</div>
+                            <div class="summary-stat">💰 获得积分: <span id="earnedPoints">0</span></div>
+                        </div>
+                        <div class="new-badges hidden nes-container is-rounded" id="newBadges">
+                            <h3>🎉 获得新徽章！</h3>
+                            <div id="newBadgesList"></div>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="button" class="nes-btn is-primary" id="continueBtn">继续练习</button>
+                            <button type="button" class="nes-btn is-warning hidden" id="retryBtn">重做错题 (<span id="mistakeCount">0</span>)</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="badges" id="badgesContainer">
-            <span style="color: #999;">暂无徽章</span>
+        <div class="badges-section">
+            <div class="nes-container is-dark with-title">
+                <p class="title">我的徽章</p>
+                <div id="badgesContainer" style="text-align: center; min-height: 60px; padding: 10px;">
+                    <span style="color: #999; font-size: 10px;">暂无徽章</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -445,7 +404,7 @@
         function updateBadgesDisplay() {
             const container = document.getElementById('badgesContainer');
             if (userData.badges.length === 0) {
-                container.innerHTML = '<span style="color: #999;">暂无徽章</span>';
+                container.innerHTML = '<span style="color: #999; font-size: 10px;">暂无徽章</span>';
             } else {
                 container.innerHTML = userData.badges.map(badgeId => {
                     const badge = BADGES[badgeId];
@@ -458,8 +417,10 @@
             // Level tabs
             document.querySelectorAll('.level-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
-                    document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
+                    document.querySelectorAll('.level-tab').forEach(t => {
+                        t.classList.remove('active', 'is-primary');
+                    });
+                    tab.classList.add('active', 'is-primary');
                     gameState.currentLevel = tab.dataset.level;
                     updateLevelInfo();
                 });
@@ -575,7 +536,7 @@
             buttons.forEach((btn, index) => {
                 btn.textContent = choices[index];
                 btn.disabled = false;
-                btn.classList.remove('correct', 'wrong');
+                btn.classList.remove('correct', 'wrong', 'is-success', 'is-error');
                 btn.dataset.correct = choices[index] === word.meaning;
             });
             
@@ -593,7 +554,7 @@
 
             // Show feedback
             if (isCorrect) {
-                clickedBtn.classList.add('correct');
+                clickedBtn.classList.add('correct', 'is-success');
                 showFeedback('✓');
                 
                 if (!gameState.isRetryMode) {
@@ -624,11 +585,11 @@
                     }
                 }
             } else {
-                clickedBtn.classList.add('wrong');
+                clickedBtn.classList.add('wrong', 'is-error');
                 // Highlight correct answer
                 buttons.forEach(btn => {
                     if (btn.dataset.correct === 'true') {
-                        btn.classList.add('correct');
+                        btn.classList.add('correct', 'is-success');
                     }
                 });
                 showFeedback('✗');
